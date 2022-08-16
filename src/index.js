@@ -1,14 +1,9 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+//引入react核心库
+import React from 'react'
+import { createRoot } from 'react-dom/client';
+//引入App
+import App from './App'
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-
-reportWebVitals();
+let container = document.getElementById('root')
+let root = createRoot(container)
+root.render(<App/>)
