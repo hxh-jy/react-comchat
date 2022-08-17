@@ -5,10 +5,6 @@ import './App.less'
 let Home = lazy(() => import('./pages/test'))
 let ComChat = lazy(() => import('./pages/comchat'))
 export default class App extends Component {
-  async componentDidMount() {
-    let alllist = await this.api.getOnlineWxUserList()
-    console.log('测试数据',this,alllist)
-  }
   render() {
     return (
       <div className="App">

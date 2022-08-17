@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
 
+import { connect } from 'react-redux'
+import {saveCurrentWxuser} from '../../redux/actions/wxUser'
 import './index.less'
-export default class WxuserList extends Component {
+
+class WxuserList extends Component {
     state = {wxuserList: [],currentWxuser: {}}
     async componentDidMount() {
         let wxuserList = await this.api.getOnlineWxUserList()
@@ -9,6 +12,7 @@ export default class WxuserList extends Component {
     }
     handleCurWxuser(item,e) {
         this.setState({currentWxuser: item})
+        this.props.saveCurrentWxuser(item)
     }
     render() {
         let {wxuserList,currentWxuser} = this.state
@@ -31,3 +35,10 @@ export default class WxuserList extends Component {
         )
     }
 }
+
+export default connect(
+    state => ({currentWxuser: state.currentWxUser}),
+    {
+        saveCurrentWxuser
+    }
+)(WxuserList)
