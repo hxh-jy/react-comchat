@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 
 import { connect } from 'react-redux'
 import {saveCurrentWxuser,saveAllContactlist,saveWxuserlist,saveRoomList} from '../../redux/actions/wxUser'
+
+import {getUserContactList} from '../../redux/actions/asyncApi'
 import './index.less'
 
 class WxuserList extends Component {
@@ -30,6 +32,18 @@ class WxuserList extends Component {
 
                 let RoomList = await this.getRoomList([item.WxId])
                 this.props.saveRoomList(RoomList)
+
+                let inhandleParms = {
+                    WxIds:[item.WxId],
+                    orgId: "3001001001000006",
+                    pageIndex: 1,
+                    pageSize: 100,
+                    status: 0,
+                    userId: "1518116958237753350",
+                }
+        
+                // 通过异步action获取处理中的请求数据  并且同时存储在redux中
+                this.props.getUserContactList(inhandleParms)
             } else {
                 this.setState({currentWxuser: {}})
                 this.props.saveCurrentWxuser({})
@@ -39,6 +53,18 @@ class WxuserList extends Component {
 
                 let RoomList = await this.getRoomList(WxIds)
                 this.props.saveRoomList(RoomList)
+
+                let inhandleParms = {
+                    WxIds,
+                    orgId: "3001001001000006",
+                    pageIndex: 1,
+                    pageSize: 100,
+                    status: 0,
+                    userId: "1518116958237753350",
+                }
+        
+                // 通过异步action获取处理中的请求数据  并且同时存储在redux中
+                this.props.getUserContactList(inhandleParms)
             }
         } else {
             let AllContactlist = await this.getAllContactList([item.WxId])
@@ -48,6 +74,18 @@ class WxuserList extends Component {
 
             let RoomList = await this.getRoomList([item.WxId])
             this.props.saveRoomList(RoomList)
+
+            let inhandleParms = {
+                WxIds:[item.WxId],
+                orgId: "3001001001000006",
+                pageIndex: 1,
+                pageSize: 100,
+                status: 0,
+                userId: "1518116958237753350",
+            }
+    
+            // 通过异步action获取处理中的请求数据  并且同时存储在redux中
+            this.props.getUserContactList(inhandleParms)
         }
     }
     async componentDidMount() {
@@ -65,6 +103,18 @@ class WxuserList extends Component {
         this.props.saveAllContactlist(AllContactlist)
         this.props.saveWxuserlist({wxuserList})
         this.props.saveRoomList(RoomList)
+        
+        let inhandleParms = {
+            WxIds,
+            orgId: "3001001001000006",
+            pageIndex: 1,
+            pageSize: 100,
+            status: 0,
+            userId: "1518116958237753350",
+        }
+
+        // 通过异步action获取处理中的请求数据  并且同时存储在redux中
+        this.props.getUserContactList(inhandleParms)
     }
     render() {
         let {wxuserList,currentWxuser} = this.state
@@ -99,6 +149,7 @@ export default connect(
         saveCurrentWxuser,
         saveAllContactlist,
         saveWxuserlist,
-        saveRoomList
+        saveRoomList,
+        getUserContactList
     }
 )(WxuserList)

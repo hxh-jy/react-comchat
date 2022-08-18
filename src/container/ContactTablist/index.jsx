@@ -14,7 +14,7 @@ class ContactTabList extends Component {
         this.setState({tab: key})
     }
     render() {
-        let {AllContactlist,RoomList} = this.props
+        let {AllContactlist,RoomList,handleContactlist} = this.props
         let {tab} = this.state
         return (
             <div className="contact-container">
@@ -24,7 +24,7 @@ class ContactTabList extends Component {
                     <TabPane tab="客户" key="3"></TabPane>
                 </Tabs>
                 {
-                    tab === '1' ? <ContactList list={AllContactlist}/> : 
+                    tab === '1' ? <ContactList list={handleContactlist}/> : 
                     tab === '2' ? <ContactList list={RoomList}/> :
                     tab === '3' ? <ContactList list={AllContactlist}/> : ''
                 }
@@ -38,6 +38,7 @@ export default connect(
     state => ({
         currentWxuser: state.currentWxUser,
         AllContactlist: state.AllContactlist,
-        RoomList: state.roomList
+        RoomList: state.roomList,
+        handleContactlist: state.handleContactlist
     }),
 )(ContactTabList)
