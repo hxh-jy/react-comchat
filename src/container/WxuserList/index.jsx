@@ -1,25 +1,57 @@
 import React, { Component } from 'react'
 
 import { connect } from 'react-redux'
-import {saveCurrentWxuser} from '../../redux/actions/wxUser'
+import {saveCurrentWxuser,saveAllContactlist,saveWxuserlist} from '../../redux/actions/wxUser'
 import './index.less'
 
 class WxuserList extends Component {
-    state = {wxuserList: [],currentWxuser: {}}
+    state = {currentWxuser: {}}
+    
+    getAllContactList = (WxIds) => {
+        let contactlistParams = {
+            LastTimestamp: 1,
+            WxIds,
+            pageIndex: 1,
+            pageSize: 100
+        }
+        return this.api.getAllContactList(contactlistParams)
+    }
+    async handleCurWxuser(item,e) {
+        if (this.props.currentWxuser && this.props.currentWxuser.WxId) {
+            if (this.props.currentWxuser.WxId !== item.WxId) {
+                this.setState({currentWxuser: item})
+                this.props.saveCurrentWxuser(item)
+                let AllContactlist = await this.getAllContactList([item.WxId])
+                this.props.saveAllContactlist(AllContactlist)
+            } else {
+                this.setState({currentWxuser: {}})
+                this.props.saveCurrentWxuser({})
+                let WxIds = this.props.wxuserList.map(item => item.WxId)
+                let AllContactlist = await this.getAllContactList(WxIds)
+                this.props.saveAllContactlist(AllContactlist)
+            }
+        } else {
+            let AllContactlist = await this.getAllContactList([item.WxId])
+            this.props.saveAllContactlist(AllContactlist)
+            this.setState({currentWxuser: item})
+            this.props.saveCurrentWxuser(item)
+        }
+    }
     async componentDidMount() {
         let wxuserList = await this.api.getOnlineWxUserList()
-        this.setState({wxuserList})
-    }
-    handleCurWxuser(item,e) {
-        this.setState({currentWxuser: item})
-        this.props.saveCurrentWxuser(item)
+        let WxIds = wxuserList.map(item => item.WxId)
+        let AllContactlist = await this.getAllContactList(WxIds)
+        this.props.saveAllContactlist(AllContactlist)
+        this.props.saveWxuserlist({wxuserList})
     }
     render() {
-        let {wxuserList,currentWxuser} = this.state
+        let {wxuserList,currentWxuser} = this.props
+        console.log('获取所有的企微账号数据',wxuserList)
         return (
             <ul className="wxlist-container">
                 {
-                    wxuserList.map((item,key) => {
+                   wxuserList && wxuserList.length > 0 ?
+                   wxuserList.map((item,key) => {
                         return (
                             <li onClick={e => this.handleCurWxuser(item,e)} className={["wxlist-item",currentWxuser.WxId === item.WxId ? 'active' : ''].join(' ')} key={item.WxId}>
                                 <img className="avatar" src={item.Avatar} alt={item.UserName} />
@@ -29,7 +61,7 @@ class WxuserList extends Component {
                                 </div>
                             </li>
                         )
-                    })
+                    }) : ''
                 }
             </ul>
         )
@@ -37,8 +69,14 @@ class WxuserList extends Component {
 }
 
 export default connect(
-    state => ({currentWxuser: state.currentWxUser}),
+    state => ({
+        currentWxuser: state.currentWxUser,
+        AllContactlist: state.AllContactlist,
+        wxuserList: state.wxuserList
+    }),
     {
-        saveCurrentWxuser
+        saveCurrentWxuser,
+        saveAllContactlist,
+        saveWxuserlist
     }
 )(WxuserList)

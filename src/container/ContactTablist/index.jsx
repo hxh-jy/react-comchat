@@ -4,40 +4,50 @@ import {connect} from 'react-redux'
 import {Tabs} from 'antd'
 import ContactList from './ContactList'
 
-import {saveAllContactlist} from '../../redux/actions/wxUser'
-
-import isequal from '../../utils/isequal'
+// import isequal from '../../utils/isequal'
 import './index.less'
 const {TabPane} = Tabs
 class ContactTabList extends Component {
-    async componentDidUpdate(preProps,preState) {
+    state = {tab: 1,RoomList: []}
+    // static async  getDerivedStateFromProps(props,state) {
+    //     let WxIds = [props.currentWxuser.WxId]
+    //     let contactlistParams = {
+    //         LastTimestamp: 1,
+    //         WxIds,
+    //         pageIndex: 1,
+    //         pageSize: 100
+    //     }
+    //     console.log(props)
+    //     let AllContactlist = await state.api.getAllContactList(contactlistParams)
+    //     let flag = isequal(AllContactlist,props.AllContactlist)
+    //     // console.log('测试',flag,props,state,AllContactlist)
+        
+    //     if (!flag) {
+    //         props.saveAllContactlist(AllContactlist)
+    //     }
+    //     return null
+    // }
+
+    onChange = async (key) => {
         let WxIds = [this.props.currentWxuser.WxId]
-        let contactlistParams = {
-            LastTimestamp: 1,
-            WxIds,
-            pageIndex: 1,
-            pageSize: 100
-        }
-        let AllContactlist = await this.api.getAllContactList(contactlistParams)
-        
-        let flag = isequal(AllContactlist,preProps.AllContactlist)
-        if (!flag) {
-            this.props.saveAllContactlist(AllContactlist)
-        }
-        
-    }
-    componentDidMount() {
+        let RoomList = await this.api.getRoomContactList({WxIds})
+        this.setState({tab: key,RoomList})
     }
     render() {
         let {AllContactlist} = this.props
+        let {tab,RoomList} = this.state
         return (
             <div className="contact-container">
-                <Tabs>
+                <Tabs defaultActiveKey="1" onChange={this.onChange}>
                     <TabPane tab="处理中" key="1"></TabPane>
                     <TabPane tab="@我" key="2"></TabPane>
                     <TabPane tab="客户" key="3"></TabPane>
                 </Tabs>
-                <ContactList list={AllContactlist}/>
+                {
+                    tab === '1' ? <ContactList list={AllContactlist}/> : 
+                    tab === '2' ? <ContactList list={RoomList}/> :
+                    <ContactList list={AllContactlist}/> 
+                }
             </div>
         )
     }
@@ -49,7 +59,4 @@ export default connect(
         currentWxuser: state.currentWxUser,
         AllContactlist: state.AllContactlist
     }),
-    {
-        saveAllContactlist
-    }
 )(ContactTabList)
