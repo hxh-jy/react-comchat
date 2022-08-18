@@ -8,34 +8,14 @@ import ContactList from './ContactList'
 import './index.less'
 const {TabPane} = Tabs
 class ContactTabList extends Component {
-    state = {tab: 1,RoomList: []}
-    // static async  getDerivedStateFromProps(props,state) {
-    //     let WxIds = [props.currentWxuser.WxId]
-    //     let contactlistParams = {
-    //         LastTimestamp: 1,
-    //         WxIds,
-    //         pageIndex: 1,
-    //         pageSize: 100
-    //     }
-    //     console.log(props)
-    //     let AllContactlist = await state.api.getAllContactList(contactlistParams)
-    //     let flag = isequal(AllContactlist,props.AllContactlist)
-    //     // console.log('测试',flag,props,state,AllContactlist)
-        
-    //     if (!flag) {
-    //         props.saveAllContactlist(AllContactlist)
-    //     }
-    //     return null
-    // }
+    state = {tab: "1"}
 
     onChange = async (key) => {
-        let WxIds = [this.props.currentWxuser.WxId]
-        let RoomList = await this.api.getRoomContactList({WxIds})
-        this.setState({tab: key,RoomList})
+        this.setState({tab: key})
     }
     render() {
-        let {AllContactlist} = this.props
-        let {tab,RoomList} = this.state
+        let {AllContactlist,RoomList} = this.props
+        let {tab} = this.state
         return (
             <div className="contact-container">
                 <Tabs defaultActiveKey="1" onChange={this.onChange}>
@@ -46,7 +26,7 @@ class ContactTabList extends Component {
                 {
                     tab === '1' ? <ContactList list={AllContactlist}/> : 
                     tab === '2' ? <ContactList list={RoomList}/> :
-                    <ContactList list={AllContactlist}/> 
+                    tab === '3' ? <ContactList list={AllContactlist}/> : ''
                 }
             </div>
         )
@@ -57,6 +37,7 @@ class ContactTabList extends Component {
 export default connect(
     state => ({
         currentWxuser: state.currentWxUser,
-        AllContactlist: state.AllContactlist
+        AllContactlist: state.AllContactlist,
+        RoomList: state.roomList
     }),
 )(ContactTabList)

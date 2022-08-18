@@ -1,12 +1,15 @@
 import React, { Component } from 'react'
 
 import { connect } from 'react-redux'
-import {saveCurrentWxuser,saveAllContactlist,saveWxuserlist} from '../../redux/actions/wxUser'
+import {saveCurrentWxuser,saveAllContactlist,saveWxuserlist,saveRoomList} from '../../redux/actions/wxUser'
 import './index.less'
 
 class WxuserList extends Component {
-    state = {currentWxuser: {}}
-    
+    state = {currentWxuser: {},wxuserList  : []}
+
+    getRoomList = (WxIds) => {
+        return this.api.getRoomContactList({WxIds})
+    }
     getAllContactList = (WxIds) => {
         let contactlistParams = {
             LastTimestamp: 1,
@@ -21,32 +24,50 @@ class WxuserList extends Component {
             if (this.props.currentWxuser.WxId !== item.WxId) {
                 this.setState({currentWxuser: item})
                 this.props.saveCurrentWxuser(item)
+
                 let AllContactlist = await this.getAllContactList([item.WxId])
                 this.props.saveAllContactlist(AllContactlist)
+
+                let RoomList = await this.getRoomList([item.WxId])
+                this.props.saveRoomList(RoomList)
             } else {
                 this.setState({currentWxuser: {}})
                 this.props.saveCurrentWxuser({})
-                let WxIds = this.props.wxuserList.map(item => item.WxId)
+                let WxIds = this.state.wxuserList.map(item => item.WxId)
                 let AllContactlist = await this.getAllContactList(WxIds)
                 this.props.saveAllContactlist(AllContactlist)
+
+                let RoomList = await this.getRoomList(WxIds)
+                this.props.saveRoomList(RoomList)
             }
         } else {
             let AllContactlist = await this.getAllContactList([item.WxId])
             this.props.saveAllContactlist(AllContactlist)
             this.setState({currentWxuser: item})
             this.props.saveCurrentWxuser(item)
+
+            let RoomList = await this.getRoomList([item.WxId])
+            this.props.saveRoomList(RoomList)
         }
     }
     async componentDidMount() {
+        // 获取所有的企业微信联系人
         let wxuserList = await this.api.getOnlineWxUserList()
         let WxIds = wxuserList.map(item => item.WxId)
+
+        // 获取所有的客户信息
         let AllContactlist = await this.getAllContactList(WxIds)
+
+        // 获取所有的群信息
+        let RoomList = await this.getRoomList(WxIds)
+
+        this.setState({wxuserList})
         this.props.saveAllContactlist(AllContactlist)
         this.props.saveWxuserlist({wxuserList})
+        this.props.saveRoomList(RoomList)
     }
     render() {
-        let {wxuserList,currentWxuser} = this.props
-        console.log('获取所有的企微账号数据',wxuserList)
+        let {wxuserList,currentWxuser} = this.state
         return (
             <ul className="wxlist-container">
                 {
@@ -72,11 +93,12 @@ export default connect(
     state => ({
         currentWxuser: state.currentWxUser,
         AllContactlist: state.AllContactlist,
-        wxuserList: state.wxuserList
+        wxuserList: state.wxuserList,
     }),
     {
         saveCurrentWxuser,
         saveAllContactlist,
-        saveWxuserlist
+        saveWxuserlist,
+        saveRoomList
     }
 )(WxuserList)
