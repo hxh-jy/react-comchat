@@ -22,8 +22,11 @@
             width: calc(100% - 56px - 56px);
             text-align: start;
             .user-name {
-                display: flex;
+                display: inline-block;
                 width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
                 color: #222;
                 cursor: pointer;
                 font-size: 12px;

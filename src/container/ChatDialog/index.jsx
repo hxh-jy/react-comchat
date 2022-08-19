@@ -1,11 +1,15 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+
+import './index.less'
 const signalR = require('@microsoft/signalr')
-export default class ChatDialog extends Component {
+
+class ChatDialog extends Component {
     state = {hubStatus: ''}
+
     componentDidMount() {
         if (!this.state.hubStatus) {   
             this.initHub()
-            
         }
     }
     componentWillUnmount() {
@@ -34,10 +38,44 @@ export default class ChatDialog extends Component {
         console.log('测试',this.state.hubStatus)
     }
     render() {
+        let {historyList,currentContactuser,currentSender} = this.props
         return (
-            <div>
-                <h1>这里是聊天框相关数据展示的地方</h1>
+            <div className="chat-container">
+                <div className="chat-header">聊天框头部</div>
+                <ul className="chat-body">
+                    {
+                        historyList.map(item => {
+                            return (
+                                <li 
+                                className={[currentContactuser.WxId === item.WxId ? 'sender-user' : 'receive-user']} 
+                                key={item.WxId + Math.random()}>
+                                    {   currentContactuser.WxId !== item.WxId ?
+                                        <img className="msg-icon" src={currentContactuser.Avatar} alt="" /> : ''
+                                    }
+                                    <div className="msg-info">
+                                        <div className="msg-user">
+                                            <span className="user-name">{item.name}</span>
+                                            <span className="send-time">{item.sendTime}</span>
+                                        </div>
+                                        <span className="msg">{item.content}</span>
+                                    </div>
+                                    {   currentContactuser.WxId === item.WxId ?
+                                        <img className="msg-icon" src={currentSender.Avatar} alt="" /> : ''
+                                    }
+                                </li>
+                            )
+                        })
+                    }
+                </ul>
+                <div className="chat-send">发送聊天信息</div>
             </div>
         )
     }
 }
+export default connect(
+    state => ({
+        historyList: state.historyList,
+        currentContactuser: state.currentContactuser,
+        currentSender: state.currentSender
+    })
+)(ChatDialog)

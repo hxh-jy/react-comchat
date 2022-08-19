@@ -32,4 +32,13 @@ api.getUserContactList = function(data) {
         data: JSON.stringify(data)
     });
 }
+
+// 企微账号下的聊天记录
+api.getChatHistorys = function(data) {
+    return request({
+        url: 'ChatHistory/ChatHistorys',
+        method: 'post',
+        data: JSON.stringify(data)
+    });
+}
 export default api

@@ -101,7 +101,7 @@ class WxuserList extends Component {
 
         this.setState({wxuserList})
         this.props.saveAllContactlist(AllContactlist)
-        this.props.saveWxuserlist({wxuserList})
+        this.props.saveWxuserlist(wxuserList)
         this.props.saveRoomList(RoomList)
         
         let inhandleParms = {
