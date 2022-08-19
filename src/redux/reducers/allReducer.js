@@ -1,13 +1,14 @@
 import { combineReducers } from "redux";
-import currentWxuserReducer,{AllContactlist,wxuserList,roomList} from './wxUser'
+import currentWxuser,{AllContactlist,wxuserList,roomList,currentContactuser} from './commonInfo'
 import handleContactlist from './asyncApi'
 
 
 const allReducer = combineReducers({
-    currentWxUser: currentWxuserReducer,
+    currentWxUser: currentWxuser,
     AllContactlist: AllContactlist,
     wxuserList: wxuserList,
     roomList: roomList,
+    currentContactuser: currentContactuser,
 
     handleContactlist: handleContactlist
 })

@@ -1,15 +1,22 @@
 import React, { Component } from 'react'
 
+import { connect } from 'react-redux'
+import {saveCurrentContactuser} from '../../../redux/actions/commonInfo'
 import './index.less'
-export default class ContactList extends Component {
+class ContactList extends Component {
+    handleCurUser(item,e) {
+        this.props.saveCurrentContactuser(item)
+    }
     render() {
-        let {list} = this.props
+        let {list,currentContactuser} = this.props
         return (
             <ul className="contact-list">
                 {
                     list.map(item => {
                         return (
-                            <li className="contact-item" 
+                            <li 
+                                onClick={(e) => this.handleCurUser(item,e)} 
+                                className={["contact-item",item.ConversationId === currentContactuser.ConversationId  && item.WxId === currentContactuser.WxId ? 'active' : ''].join(' ')}
                                 key={item.ConversationId + Math.random()}>
                                 {
                                    item.Avatar ? <img src={item.Avatar} alt={item.UserName} /> : <img src='https://cdn.ourplay.net/xspace/headimage/1647242291211111.jpg' alt={item.NickName} />
@@ -29,3 +36,11 @@ export default class ContactList extends Component {
         )
     }
 }
+export default connect(
+    state => ({
+        currentContactuser: state.currentContactuser
+    }),
+    {
+        saveCurrentContactuser
+    }
+)(ContactList)

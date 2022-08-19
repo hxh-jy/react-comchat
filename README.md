@@ -8,3 +8,5 @@
 + React添加多个类名  通过数组的方式添加
     - eg: className={["wxlist-item",'active'].join(' ')}
 
+# 用到的技术栈
++ redux + react-redux + react-router-dom + antd + axios

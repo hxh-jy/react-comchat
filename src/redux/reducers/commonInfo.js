@@ -1,9 +1,19 @@
-import {SAVE_WXUSER,SAVE_ALLCONTACTLIST,SAVE_WXUSERLIST,SAVE_ROOMCONTACTLIST } from '../constant'
+import {SAVE_WXUSER,SAVE_ALLCONTACTLIST,SAVE_WXUSERLIST,SAVE_ROOMCONTACTLIST,SAVE_CURRENTCONTACT } from '../constant'
 let initWxuser = {} // 初始化当前联系人
-export default function currentWxuserReducer (preState = initWxuser,action) {
+export default function currentWxuser (preState = initWxuser,action) {
     let {type,data} = action
     switch (type) {
         case SAVE_WXUSER:
+            return preState = data
+        default:
+            return preState
+    }
+}
+
+export  function currentContactuser (preState = {},action) {
+    let {type,data} = action
+    switch (type) {
+        case SAVE_CURRENTCONTACT:
             return preState = data
         default:
             return preState

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import { connect } from 'react-redux'
-import {saveCurrentWxuser,saveAllContactlist,saveWxuserlist,saveRoomList} from '../../redux/actions/wxUser'
+import {saveCurrentWxuser,saveAllContactlist,saveWxuserlist,saveRoomList} from '../../redux/actions/commonInfo'
 
 import {getUserContactList} from '../../redux/actions/asyncApi'
 import './index.less'
