@@ -29,7 +29,9 @@ class ContactList extends Component {
         this.props.saveCurrentSender(sender[0])
         let msgList = []
 
+        // 11041 文本消息 ;11042 || 11030 图片；11043 ||  11044 视频; 11045 || 11031文件;11066 小程序;11047 图文链接；
         let historylist = await this.getChatHistorys(item)
+       
         historylist.forEach(item => {
             let msg = JSON.parse(item.Msg)
             msgList.unshift({
@@ -38,6 +40,10 @@ class ContactList extends Component {
                 type: msg.type,
                 sendTime: msg.data.send_time,
                 name: item.UserName === "api" || item.UserName === 'test' || !item.UserName ? msg.data.sender_name : item.UserName,
+                url: msg.type === 11047 ? msg.data.url : '',
+                image_url: msg.type === 11047 ? msg.data.image_url : '',
+                desc: msg.type === 11047 ? msg.data.desc : '',
+                title: msg.type === 11047 ? msg.data.title : ''
             })
         })
         this.props.chatHistorylist(msgList)
