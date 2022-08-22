@@ -4,6 +4,7 @@ export const SAVE_ALLCONTACTLIST = 'saveAllContactlist'
 export const SAVE_ROOMCONTACTLIST = 'saveRoomlist'
 export const SAVE_CURRENTCONTACT = 'saveCurrentcontact'
 export const SAVE_CURRENTSENDER = 'saveCurrentsender'
+export const SAVE_USERINFO = 'saveUserinfo'
 
 export const SAVE_MSGHISTOTYLIST = 'saveMsgHistorylist'
 

@@ -42,6 +42,14 @@ api.getChatHistorys = function(data) {
     });
 }
 
+// 获取员工信息
+api.getUserInfo = function(params) {
+    return request({
+        url: 'auth/oauth/userinfo',
+        method: 'get',
+        params
+    },true);
+}
 // 发送文本消息
 api.sendMsg = function(data) {
     return request({

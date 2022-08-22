@@ -55,6 +55,15 @@ class ChatDialog extends Component {
             return;
         }
     }
+    componentDidUpdate() {
+        let {chatDialog} = this
+        // chatDialog.scrollTop = chatDialog.scrollHeight - chatDialog.clientHeight
+        if (chatDialog && chatDialog.scrollHeight) {
+            // 当前对话框滚动到最底部
+            chatDialog.scrollTop = chatDialog.scrollHeight - chatDialog.clientHeight
+            console.log('有新消息进来时展示最新消息',chatDialog.scrollHeight )
+        }
+    }
     componentDidMount() {
         if (!this.state.hubStatus) {   
             this.initHub()
@@ -74,10 +83,12 @@ class ChatDialog extends Component {
         .withAutomaticReconnect([0, 5000, 10000, 20000, 50000, 100000, 150000, 200000])
         .build()
         hubStatus.on('ReceiveChatMessage',res => {
+            let {currentContactuser} = this.props
             console.log('接收到了新消息',res)
             let feedback = JSON.parse(res)
             const msg = JSON.parse(feedback.data);
-            if (msg) {
+            console.log('feedback: ***',feedback,'msg: ***',msg)
+            if (msg && msg.data.conversation_id === currentContactuser.ConversationId && feedback.wxid === currentContactuser.WxId) {
                 let {historyList} = this.props
                 historyList.push({
                     WxId:  msg.data.sender,
@@ -109,7 +120,7 @@ class ChatDialog extends Component {
         return (
             <div className="chat-container">
                 <div className="chat-header">聊天框头部</div>
-                <ul className="chat-body">
+                <ul ref={node => this.chatDialog = node} className="chat-body">
                     {
                         historyList.map(item => {
                             return (
