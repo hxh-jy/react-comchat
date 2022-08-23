@@ -13,7 +13,7 @@ import { Input,message,Popover,Upload } from 'antd';
 const { TextArea } = Input;
 const signalR = require('@microsoft/signalr')
 class ChatDialog extends Component {
-    state = {hubStatus: '',inputContent: '',emojiVisible: false}
+    state = {hubStatus: '',inputContent: '',emojiVisible: false,page: 1,scrolltop: false}
     getsendText = (sendUser,content) => {
         const params = {
             WxId: sendUser.WxId,
@@ -60,11 +60,13 @@ class ChatDialog extends Component {
     }
     componentDidUpdate() {
         let {chatDialog} = this
-        // chatDialog.scrollTop = chatDialog.scrollHeight - chatDialog.clientHeight
-        if (chatDialog && chatDialog.scrollHeight) {
+        let {scrolltop} = this.state
+        console.log('是否需要浮动', scrolltop)
+        if (chatDialog && chatDialog.scrollHeight && !scrolltop) {
             // 当前对话框滚动到最底部
             chatDialog.scrollTop = chatDialog.scrollHeight - chatDialog.clientHeight
-            // console.log('有新消息进来时展示最新消息',chatDialog.scrollHeight )
+        } else {
+            chatDialog.scrollTop = 0
         }
     }
     componentDidMount() {
@@ -189,6 +191,47 @@ class ChatDialog extends Component {
         }
         console.log('上传图片的请求',params,formData)
     }
+    getChatHistorys = (page,item) => {
+        let parms = {
+            pageIndex: page,
+            pageSize: 100,
+            LastTimestamp: 0,
+            WxId: item.WxId,
+            ConversationIds: [
+                item.ConversationId
+            ],
+            Type: 0
+          }
+          return this.api.getChatHistorys(parms)
+    }
+    moreHistory = async  () => {
+        let {page} = this.state
+        let {currentContactuser,historyList} = this.props
+        this.setState({page: page + 1,scrolltop: true})
+        
+        let msgList = []
+
+        // 11041 文本消息 ;11042 || 11030 图片；11043 ||  11044 视频; 
+        // 11045 || 11031文件;11066 小程序;11047 图文链接；
+        let historylist = await this.getChatHistorys(page + 1,currentContactuser)
+       
+        historylist.forEach(item => {
+            let msg = JSON.parse(item.Msg)
+            // console.log('历史信息**** ',msg)
+            msgList.unshift({
+                WxId:  msg.data.sender,
+                content: msg.data.content || msg.data.file_path || msg.data.url || (msg.type === 11066 ? msg.data.name : ''),
+                type: msg.type,
+                sendTime: msg.data.send_time,
+                name: item.UserName === "api" || item.UserName === 'test' || !item.UserName ? msg.data.sender_name : item.UserName,
+                url: msg.type === 11047 ? msg.data.url : '',
+                image_url: msg.type === 11047 ? msg.data.image_url : '',
+                desc: msg.type === 11047 ? msg.data.desc : '',
+                title: msg.type === 11047 ? msg.data.title : ''
+            })
+        })
+        this.props.chatHistorylist([...msgList,...historyList])
+    }
     render() {
         let {historyList,currentContactuser,currentSender} = this.props
         let {inputContent,emojiVisible} = this.state
@@ -198,7 +241,14 @@ class ChatDialog extends Component {
                 <div className="chat-header">聊天框头部</div>
                 {/* 消息展示框 */}
                 <ul ref={node => this.chatDialog = node} className="chat-body">
+                    <li className="moreChatHistory">
                     {
+                        historyList.length === 100 ?
+                        <span onClick={this.moreHistory}>点击加载更多</span> : 
+                        <span>暂无更多聊天记录</span>
+                    }
+                    </li>
+                    {   
                         historyList.map((item,index) => {
                             return (
                                 <li 
@@ -307,7 +357,8 @@ export default connect(
         historyList: state.historyList,
         currentContactuser: state.currentContactuser,
         currentSender: state.currentSender,
-        userInfo: state.userInfo
+        userInfo: state.userInfo,
+        wxuserList: state.wxuserList
     }),
     {
         chatHistorylist,
