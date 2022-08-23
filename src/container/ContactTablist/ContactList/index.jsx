@@ -29,11 +29,13 @@ class ContactList extends Component {
         this.props.saveCurrentSender(sender[0])
         let msgList = []
 
-        // 11041 文本消息 ;11042 || 11030 图片；11043 ||  11044 视频; 11045 || 11031文件;11066 小程序;11047 图文链接；
+        // 11041 文本消息 ;11042 || 11030 图片；11043 ||  11044 视频; 
+        // 11045 || 11031文件;11066 小程序;11047 图文链接；
         let historylist = await this.getChatHistorys(item)
        
         historylist.forEach(item => {
             let msg = JSON.parse(item.Msg)
+            // console.log('历史信息**** ',msg)
             msgList.unshift({
                 WxId:  msg.data.sender,
                 content: msg.data.content || msg.data.file_path || msg.data.url || (msg.type === 11066 ? msg.data.name : ''),

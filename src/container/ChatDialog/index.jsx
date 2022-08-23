@@ -1,9 +1,14 @@
 import React, { Component } from 'react'
 import {chatHistorylist } from '../../redux/actions/msgInfo'
 import { connect } from 'react-redux'
+// qq_faceList, 
+
+import  {qq_faceMap} from '../../assets/js/qq_face'
 
 import {parseTime}from '../../utils/time'
 import './index.less'
+
+
 
 import { Input,message } from 'antd';
 const { TextArea } = Input;
@@ -61,7 +66,7 @@ class ChatDialog extends Component {
         if (chatDialog && chatDialog.scrollHeight) {
             // 当前对话框滚动到最底部
             chatDialog.scrollTop = chatDialog.scrollHeight - chatDialog.clientHeight
-            console.log('有新消息进来时展示最新消息',chatDialog.scrollHeight )
+            // console.log('有新消息进来时展示最新消息',chatDialog.scrollHeight )
         }
     }
     componentDidMount() {
@@ -114,6 +119,28 @@ class ChatDialog extends Component {
         this.setState({hubStatus})
         console.log('测试',this.state.hubStatus)
     }
+
+    formatMsg = (text,index) => {
+        let faceList = text.match(/\[.*?\]/g)
+        // return text
+        if (!faceList) {
+            return text
+        } else if(faceList && faceList.length > 0){
+            faceList.forEach(item => {
+                let index = qq_faceMap.get(item)
+                if (index >= 0) {
+                    let msgDiv = '';
+                    msgDiv = `<span 
+                    class='qqFace' 
+                    style='background-position: ${-(index%15)*29}px ${-(Math.floor(index/15))*29}px'
+                    ></span>`;
+                    text = text.replace(item,msgDiv)
+                    return text
+                }
+            })
+            return text
+        }
+    }
     render() {
         let {historyList,currentContactuser,currentSender} = this.props
         let {inputContent} = this.state
@@ -122,7 +149,7 @@ class ChatDialog extends Component {
                 <div className="chat-header">聊天框头部</div>
                 <ul ref={node => this.chatDialog = node} className="chat-body">
                     {
-                        historyList.map(item => {
+                        historyList.map((item,index) => {
                             return (
                                 <li 
                                 className={[currentContactuser.WxId === item.WxId ? 'sender-user' : 'receive-user']} 
@@ -136,7 +163,8 @@ class ChatDialog extends Component {
                                             <span className="send-time"> {parseTime(item.sendTime)}</span>
                                         </div>
                                         {   item.type === 11041 ?
-                                            <span className="msg">{item.content}</span> : 
+                                            <span className="msg" dangerouslySetInnerHTML={{ __html: this.formatMsg(item.content,index) }}></span> : 
+                                            // <span className="msg">{this.formatMsg(item.content,index)}</span> : 
                                             item.type === 11042 || item.type === 11048 ? 
                                             <img className="chat-img" src={item.content} alt="" /> : 
                                             item.type === 11043 || item.type === 11044 ? 
