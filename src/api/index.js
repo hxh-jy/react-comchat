@@ -51,21 +51,47 @@ api.getUserInfo = function(params) {
     },true);
 }
 // 发送文本消息
-api.sendMsg = function(data) {
+api.sendText = function(data) {
     return request({
         url: 'api/msg/text',
         method: 'post',
         data: JSON.stringify(data)
     });
 }
+
+// 上传文件
+api.uploadFile = function(data) {
+    return request({
+        url: '/File/UploadFile',
+        method: 'post',
+        data: data
+    }, false, true) // 以multipart/form-data形式上传
+}
+// 发送图片消息
+api.sendImage = function(data) {
+    return request({
+        url: '/api/msg/image',
+        method: 'post',
+        data: JSON.stringify(data)
+    })
+}
+
+// 发送文件消息
+api.sendFile = function(data) {
+    return request({
+        url: '/api/msg/file',
+        method: 'post',
+        data: JSON.stringify(data)
+    })
+}
 // 发送视频消息
-// export function sendVideo(data) {
-//     return request({
-//         url: '/api/msg/video',
-//         method: 'post',
-//         data: JSON.stringify(data)
-//     })
-// }
+api.sendVideo = function(data) {
+    return request({
+        url: '/api/msg/video',
+        method: 'post',
+        data: JSON.stringify(data)
+    })
+}
 
 // // 发送小程序消息
 // export function sendMiniprogram(data) {

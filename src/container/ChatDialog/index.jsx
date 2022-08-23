@@ -1,22 +1,20 @@
 import React, { Component } from 'react'
 import {chatHistorylist } from '../../redux/actions/msgInfo'
 import { connect } from 'react-redux'
-// qq_faceList, 
 
+import Emoji from '../../components/Emoji'
 import  {qq_faceMap} from '../../assets/js/qq_face'
-
 import {parseTime}from '../../utils/time'
 import './index.less'
 
 
 
-import { Input,message } from 'antd';
+import { Input,message,Popover,Upload } from 'antd';
 const { TextArea } = Input;
 const signalR = require('@microsoft/signalr')
-
 class ChatDialog extends Component {
-    state = {hubStatus: '',inputContent: ''}
-    getSendMsg = (sendUser,content) => {
+    state = {hubStatus: '',inputContent: '',emojiVisible: false}
+    getsendText = (sendUser,content) => {
         const params = {
             WxId: sendUser.WxId,
             Content: content,
@@ -24,7 +22,7 @@ class ChatDialog extends Component {
             msgSource: 'api_artificial_input',
             senderName: "韩雪红-卓盟前端"
         }
-        return this.api.sendMsg(params)
+        return this.api.sendText(params)
     }
     onChange =(e) => {
         let {inputContent} = this.state
@@ -46,7 +44,7 @@ class ChatDialog extends Component {
             if(inputContent.endsWith('\n')) {
                 this.setState({inputContent: inputContent.slice(0,inputContent.length - 1)})
             }
-            this.getSendMsg(currentContactuser,inputContent)
+            this.getsendText(currentContactuser,inputContent)
         }
     }
     fileName = url => {
@@ -120,7 +118,7 @@ class ChatDialog extends Component {
         console.log('测试',this.state.hubStatus)
     }
 
-    formatMsg = (text,index) => {
+    formatMsg = (text) => {
         let faceList = text.match(/\[.*?\]/g)
         // return text
         if (!faceList) {
@@ -141,12 +139,64 @@ class ChatDialog extends Component {
             return text
         }
     }
+    getEmoji = (content,flag) => {
+        let {inputContent} = this.state
+        this.setState({inputContent: inputContent + content,emojiVisible: flag})
+    }
+    transferEmojiShow = () => {
+        let {emojiVisible} = this.state
+        this.setState({emojiVisible: !emojiVisible})
+    }
+    async uploadImage(params){
+        let _file = params.file,{currentContactuser,userInfo} = this.props
+        const formData = new FormData()
+        formData.append('file',_file)
+        // 请求上传接口,会返回一个完整的上传图片地址
+        let FileUrl = await this.api.uploadFile(formData)
+
+        let fileParams = {
+            WxId: currentContactuser.WxId,
+            FileUrl,
+            ConversationId: currentContactuser.ConversationId,
+            msgSource: 'api_artificial_input',
+            senderName: userInfo.realName
+        }
+        let upload = await this.api.sendImage(fileParams)
+        console.log('上传图片的请求',params,formData,upload)
+    }
+    async uploadFile(params) {
+        // sendFile sendVideo 
+        let _file = params.file,{currentContactuser,userInfo} = this.props
+        const formData = new FormData()
+        formData.append('file',_file)
+        // 请求上传接口,会返回一个完整的上传图片地址
+        let FileUrl = await this.api.uploadFile(formData)
+
+        let fileParams = {
+            WxId: currentContactuser.WxId,
+            FileUrl,
+            ConversationId: currentContactuser.ConversationId,
+            msgSource: 'api_artificial_input',
+            senderName: userInfo.realName
+        }
+        
+        if (params.file.type.indexOf('image') >  -1) {
+            this.api.sendImage(fileParams)
+        } else if (params.file.type.indexOf('video') > -1) {
+            this.api.sendVideo(fileParams)
+        } else {
+            this.api.sendFile(fileParams)
+        }
+        console.log('上传图片的请求',params,formData)
+    }
     render() {
         let {historyList,currentContactuser,currentSender} = this.props
-        let {inputContent} = this.state
+        let {inputContent,emojiVisible} = this.state
+        
         return (
             <div className="chat-container">
                 <div className="chat-header">聊天框头部</div>
+                {/* 消息展示框 */}
                 <ul ref={node => this.chatDialog = node} className="chat-body">
                     {
                         historyList.map((item,index) => {
@@ -173,13 +223,15 @@ class ChatDialog extends Component {
                                                     muted  
                                                     preload="true"
                                                     src={item.content}></video> : 
-                                            item.type === 11045 || item.type === 11031 ?      
+                                            item.type === 11045 || item.type === 11031 ? 
+                                                // 下载文件 
                                             <span className="msg">文件：{this.fileName(item.content)}</span> : 
                                             item.type === 11066  ?      
                                             <span className="msg">{item.content+'【小程序】'}</span> : 
+                                            // 11047图文链接 超链接
                                             item.type === 11047  ?      
                                             <span className="imgtext-link">
-                                                <a className="link-url" href="/">
+                                                <a className="link-url" href={item.url}>
                                                     <span className="link-title">{item.title}</span>
                                                     <span className="link-body">
                                                         <span className="link-desc">{item.desc}</span>
@@ -199,13 +251,52 @@ class ChatDialog extends Component {
                         })
                     }
                 </ul>
+                
+                {/* 发送消息框 */}
                 <div className="chat-send">
+                    {/* 发送表情包、视频、图片、文件 */}
+                    <ul className="send-other">
+                        <li className="send-emoji">
+                            <Popover 
+                            visible={emojiVisible}
+                            content={<Emoji getEmoji={this.getEmoji}/>} 
+                            title="发送表情包" 
+                            trigger="click">
+                                <img 
+                                onClick={this.transferEmojiShow}
+                                src={require('../../assets/img/tochat/emoji.png')}  
+                                alt="发送表情包" />
+                            </Popover>
+                        </li>
+                        {/* customRequest  自定义上传文件 */}
+                        <li className="send-img">
+                            <Upload
+                            action=""
+                            showUploadList={false} 
+                            customRequest={file => this.uploadImage(file)}
+                            >
+                                <img src={require("../../assets/img/tochat/picture.png" )} alt="上传图片" />
+                            </Upload>
+                        </li>
+                        
+                        <li className="send-file">
+                            <Upload
+                            action=""
+                            showUploadList={false} 
+                            customRequest={file => this.uploadFile(file)}
+                            >
+                                <img src={require("../../assets/img/tochat/file.png" )} alt="发送文件" />
+                            </Upload>
+                        </li>
+                    </ul>
+                    {/* 发送普通文本 */}
                     <TextArea 
                     value={inputContent} 
                     rows={7} 
                     onPressEnter={this.onPressEnter}
                     onInput={this.onChange}
                     />
+                    <div className="inputDesc"> Enter发送; Ctrl+Enter换行 </div>
                 </div>
             </div>
         )
@@ -215,7 +306,8 @@ export default connect(
     state => ({
         historyList: state.historyList,
         currentContactuser: state.currentContactuser,
-        currentSender: state.currentSender
+        currentSender: state.currentSender,
+        userInfo: state.userInfo
     }),
     {
         chatHistorylist,
