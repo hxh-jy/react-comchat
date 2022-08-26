@@ -109,4 +109,22 @@ api.getRoomMemberList = function(data) {
 //     })
 // }
 
+// 置顶联系人
+api.getContactTopRequest = function(data) {
+    return request({
+        url: '/Contact/ConactTopRequest',
+        method: 'post',
+        data: JSON.stringify(data)
+    })
+}
+
+// 取消联系人的置顶
+api.getCancelContactTopRequest = function(data) {
+    return request({
+        url: '/Contact/CancelContactTopRequest',
+        method: 'post',
+        data: JSON.stringify(data)
+    })
+}
+
 export default api
