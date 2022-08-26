@@ -92,7 +92,14 @@ api.sendVideo = function(data) {
         data: JSON.stringify(data)
     })
 }
-
+// 加载群成员列表
+api.getRoomMemberList = function(data) {
+    return request({
+        url: '/Room/RoomMemberList',
+        method: 'post',
+        data: JSON.stringify(data),
+    });
+}
 // // 发送小程序消息
 // export function sendMiniprogram(data) {
 //     return request({

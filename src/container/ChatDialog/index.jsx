@@ -61,7 +61,6 @@ class ChatDialog extends Component {
     componentDidUpdate() {
         let {chatDialog} = this
         let {scrolltop} = this.state
-        console.log('是否需要浮动', scrolltop)
         if (chatDialog && chatDialog.scrollHeight && !scrolltop) {
             // 当前对话框滚动到最底部
             chatDialog.scrollTop = chatDialog.scrollHeight - chatDialog.clientHeight
@@ -217,9 +216,9 @@ class ChatDialog extends Component {
        
         historylist.forEach(item => {
             let msg = JSON.parse(item.Msg)
-            // console.log('历史信息**** ',msg)
             msgList.unshift({
                 WxId:  msg.data.sender,
+                ConversationId:  msg.data.conversation_id || msg.data.room_conversation_id,
                 content: msg.data.content || msg.data.file_path || msg.data.url || (msg.type === 11066 ? msg.data.name : ''),
                 type: msg.type,
                 sendTime: msg.data.send_time,
@@ -231,6 +230,17 @@ class ChatDialog extends Component {
             })
         })
         this.props.chatHistorylist([...msgList,...historyList])
+    }
+
+    getUserAvatar = (item) => {
+        let {roomMemberList,currentContactuser} = this.props
+        
+        if (currentContactuser && currentContactuser.ConversationId.includes('R:') && roomMemberList && roomMemberList.length > 0) {
+            let user = roomMemberList.filter(user => user.UserId === item.WxId)[0]
+            return user ? user.Avatar : ''
+        } else {
+            return currentContactuser.Avatar
+        }
     }
     render() {
         let {historyList,currentContactuser,currentSender} = this.props
@@ -255,7 +265,7 @@ class ChatDialog extends Component {
                                 className={[currentContactuser.WxId === item.WxId ? 'sender-user' : 'receive-user']} 
                                 key={item.WxId + Math.random()}>
                                     {   currentContactuser.WxId !== item.WxId ?
-                                        <img className="msg-icon" src={currentContactuser.Avatar} alt="" /> : ''
+                                        <img className="msg-icon" src={this.getUserAvatar(item)} alt="" /> : ''
                                     }
                                     <div className="msg-info">
                                         <div className="msg-user">
@@ -358,7 +368,8 @@ export default connect(
         currentContactuser: state.currentContactuser,
         currentSender: state.currentSender,
         userInfo: state.userInfo,
-        wxuserList: state.wxuserList
+        wxuserList: state.wxuserList,
+        roomMemberList: state.roomMemberList
     }),
     {
         chatHistorylist,

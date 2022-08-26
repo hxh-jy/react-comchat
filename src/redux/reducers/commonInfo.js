@@ -1,5 +1,5 @@
 import {SAVE_WXUSER,SAVE_ALLCONTACTLIST,SAVE_WXUSERLIST,SAVE_ROOMCONTACTLIST,
-        SAVE_CURRENTCONTACT,SAVE_CURRENTSENDER,SAVE_USERINFO } from '../constant'
+        SAVE_CURRENTCONTACT,SAVE_CURRENTSENDER,SAVE_USERINFO,SAVE_ROOMMEMBERLIST } from '../constant'
 let initWxuser = {} // 初始化当前联系人
 export default function currentWxuser (preState = initWxuser,action) {
     let {type,data} = action
@@ -63,6 +63,15 @@ export function userInfo (preState = {},action) {
     let {type,data} = action
     switch (type) {
         case SAVE_USERINFO:
+            return preState = data
+        default:
+            return preState
+    }
+}
+export function roomMemberList (preState = [],action) {
+    let {type,data} = action
+    switch (type) {
+        case SAVE_ROOMMEMBERLIST:
             return preState = data
         default:
             return preState

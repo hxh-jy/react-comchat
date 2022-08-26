@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import { connect } from 'react-redux'
-import {saveCurrentContactuser,saveCurrentSender} from '../../../redux/actions/commonInfo'
+import {saveCurrentContactuser,saveCurrentSender,saveRoomMemberlist} from '../../../redux/actions/commonInfo'
 
 import {chatHistorylist } from '../../../redux/actions/msgInfo'
 import './index.less'
@@ -20,9 +20,16 @@ class ContactList extends Component {
           }
           return this.api.getChatHistorys(parms)
     }
-
+    getRoomMemberlist = (user) => {
+        // getRoomMemberList
+        let params = {
+            ConversationId: user.ConversationId,
+            WxId: user.WxId
+        }
+        return this.api.getRoomMemberList(params)
+    }
     async handleCurUser(item,e) {
-        let {wxuserList} = this.props
+        let {wxuserList,saveRoomMemberlist} = this.props
         
         let sender = wxuserList.filter(user => user.WxId === item.WxId)
         this.props.saveCurrentContactuser(item)
@@ -38,6 +45,7 @@ class ContactList extends Component {
             // console.log('历史信息**** ',msg)
             msgList.unshift({
                 WxId:  msg.data.sender,
+                ConversationId:  msg.data.conversation_id || msg.data.room_conversation_id,
                 content: msg.data.content || msg.data.file_path || msg.data.url || (msg.type === 11066 ? msg.data.name : ''),
                 type: msg.type,
                 sendTime: msg.data.send_time,
@@ -48,7 +56,13 @@ class ContactList extends Component {
                 title: msg.type === 11047 ? msg.data.title : ''
             })
         })
+        // console.log('msgList',msgList)
         this.props.chatHistorylist(msgList)
+
+        if (item.ConversationId.includes('R:')) {
+            let roomlist = await this.getRoomMemberlist(item)
+            saveRoomMemberlist(roomlist)
+        }
     }
     render() {
         let {list,currentContactuser} = this.props
@@ -87,6 +101,7 @@ export default connect(
     {
         saveCurrentContactuser,
         chatHistorylist, 
-        saveCurrentSender
+        saveCurrentSender,
+        saveRoomMemberlist
     }
 )(ContactList)
