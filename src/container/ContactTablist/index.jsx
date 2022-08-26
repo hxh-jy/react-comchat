@@ -24,9 +24,9 @@ class ContactTabList extends Component {
                     <TabPane tab="客户" key="3"></TabPane>
                 </Tabs>
                 {
-                    tab === '1' ? <ContactList list={handleContactlist}/> : 
-                    tab === '2' ? <ContactList list={RoomList}/> :
-                    tab === '3' ? <ContactList list={AllContactlist}/> : ''
+                    tab === '1' ? <ContactList tab={tab} list={handleContactlist}/> : 
+                    tab === '2' ? <ContactList tab={tab} list={RoomList}/> :
+                    tab === '3' ? <ContactList tab={tab} list={AllContactlist}/> : ''
                 }
             </div>
         )

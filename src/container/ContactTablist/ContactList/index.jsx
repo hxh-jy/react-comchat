@@ -1,12 +1,15 @@
 import React, { Component } from 'react'
 
 import { connect } from 'react-redux'
+import { Popover } from 'antd';
 import {saveCurrentContactuser,saveCurrentSender,saveRoomMemberlist} from '../../../redux/actions/commonInfo'
 
 import {chatHistorylist } from '../../../redux/actions/msgInfo'
+import Toast from '../../../components/Toast';
 import './index.less'
-class ContactList extends Component {
 
+class ContactList extends Component {
+    state = {isShow: true}
     getChatHistorys = (item) => {
         let parms = {
             pageIndex: 1,
@@ -30,6 +33,7 @@ class ContactList extends Component {
     }
     async handleCurUser(item,e) {
         let {wxuserList,saveRoomMemberlist} = this.props
+        this.setState({isShow: false})
         
         let sender = wxuserList.filter(user => user.WxId === item.WxId)
         this.props.saveCurrentContactuser(item)
@@ -63,20 +67,68 @@ class ContactList extends Component {
             let roomlist = await this.getRoomMemberlist(item)
             saveRoomMemberlist(roomlist)
         }
+        let {list} = this.props
+        list.forEach(user => {
+            user.visible = false
+        })
+    }
+    handleRightmenu(e,item) {
+        console.log('测试单击右键的实现',item.visible)
+        item.visible = !item.visible
+        let {list} = this.props
+        this.setState({isShow: true})
+        list.forEach(user => {
+            if (user.ConversationId !== item.ConversationId) {
+                user.visible = false
+            }
+        })
     }
     render() {
-        let {list,currentContactuser} = this.props
+        let {list,currentContactuser,tab} = this.props
+        let {isShow} = this.state
         return (
             <ul className="contact-list">
-                {
+                {   
+                    tab !== '2' ? 
+                    list.map(item => {
+                        return (
+                            <Popover
+                            title="请选择你要进行的操作"
+                            trigger="contextMenu"
+                            placement="top"
+                            content={<Toast currentUser={item}/>} 
+                            visible={item.visible && isShow}
+                            key={item.ConversationId + Math.random()}
+                            >
+                                <li 
+                                    onContextMenu = {e => this.handleRightmenu(e,item)}
+                                    onClick={(e) => this.handleCurUser(item,e)} 
+                                    className={["contact-item",item.ConversationId === currentContactuser.ConversationId  && item.WxId === currentContactuser.WxId ? 'active' : ''].join(' ')}
+                                    >
+                                    {
+                                    item.Avatar ? <img src={item.Avatar} alt={item.UserName} /> : <img src='https://cdn.ourplay.net/xspace/headimage/1647242291211111.jpg' alt={item.NickName} />
+                                    }
+                                    <div className="user-info">
+                                        <span className="user-name">{item.UserName || item.NickName}</span>
+                                        {
+                                            item.IsDelete === 0 ? (<span className="flud">流失</span> ): ''  ||
+                                            item.CurrentReceiptionStatus === 0 ? (<span className="flud">接待</span>) : ''
+                                        }
+                                    </div>
+                                </li>
+                            </Popover>
+                        )
+                    }) : 
                     list.map(item => {
                         return (
                             <li 
+                                onContextMenu = {e => this.handleRightmenu(e,item)}
                                 onClick={(e) => this.handleCurUser(item,e)} 
                                 className={["contact-item",item.ConversationId === currentContactuser.ConversationId  && item.WxId === currentContactuser.WxId ? 'active' : ''].join(' ')}
-                                key={item.ConversationId + Math.random()}>
+                                key={item.ConversationId + Math.random()}
+                                >
                                 {
-                                   item.Avatar ? <img src={item.Avatar} alt={item.UserName} /> : <img src='https://cdn.ourplay.net/xspace/headimage/1647242291211111.jpg' alt={item.NickName} />
+                                item.Avatar ? <img src={item.Avatar} alt={item.UserName} /> : <img src='https://cdn.ourplay.net/xspace/headimage/1647242291211111.jpg' alt={item.NickName} />
                                 }
                                 <div className="user-info">
                                     <span className="user-name">{item.UserName || item.NickName}</span>
