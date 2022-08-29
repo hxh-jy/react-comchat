@@ -8,8 +8,6 @@ import {parseTime}from '../../utils/time'
 
 import './index.less'
 
-
-
 import { Input,message,Popover,Upload } from 'antd';
 const { TextArea } = Input;
 const signalR = require('@microsoft/signalr')

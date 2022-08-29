@@ -75,7 +75,6 @@ class ContactList extends Component {
         })
     }
     handleRightmenu(e,item) {
-        console.log('测试单击右键的实现',item.visible)
         item.visible = !item.visible
         let {list} = this.props
         this.setState({isShow: true})
@@ -86,13 +85,10 @@ class ContactList extends Component {
         })
     }
 
-    // handleSettingTop = (item) => {
-    //     let {list} = this.state
-    //     let newList = list.filter(user => user.ConversationId !== item.ConversationId)
-    //     this.setState([item,...newList])
-    // }
+    transferToast = (flag)  => {
+        this.setState({isShow: flag})
+    }
     render() {
-        console.log('测试***********',this.state.list)
         let {list,currentContactuser,tab} = this.props
         let {isShow} = this.state
         let sortList = reverseByKey(list,'LastChatTimestamp','isOnTop')
@@ -106,8 +102,8 @@ class ContactList extends Component {
                             <Popover
                             title="请选择你要进行的操作"
                             trigger="contextMenu"
-                            placement="top"
-                            content={<Toast currentUser={item}/>} 
+                            placement="right"
+                            content={<Toast transferToast={this.transferToast} currentUser={item}/>} 
                             visible={item.visible && isShow}
                             key={item.ConversationId + Math.random()}
                             >

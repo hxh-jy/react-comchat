@@ -15,7 +15,7 @@ export default class Toast extends Component {
             WxId: `${user.WxId}`,
             ContactUserId: `${user.ContactUserId}`,
         }
-        this.api.getContactTopRequest(params)
+        this.api.getCancelContactTopRequest(params)
     }
     handleTop = () => {
         let {currentUser: user} = this.props
@@ -28,6 +28,7 @@ export default class Toast extends Component {
             user.isOnTop = 1
             this.cancelContactTopRequest(user)
         }
+        this.props.transferToast(false)
     }
     render() {
         let {currentUser} = this.props
@@ -37,7 +38,7 @@ export default class Toast extends Component {
                 {
                     currentUser.isOnTop === 1 ? 
                     <Button className="set-top" type="primary" onClick={this.handleTop}>置顶</Button> : 
-                    <Button className="set-top" type="primary">取消置顶</Button>
+                    <Button className="set-top" type="primary" onClick={this.handleTop}>取消置顶</Button>
                 }
             </div>
         )
