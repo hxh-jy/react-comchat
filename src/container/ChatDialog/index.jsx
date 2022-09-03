@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import Emoji from '../../components/Emoji'
 import  {qq_faceMap} from '../../assets/js/qq_face'
 import {parseTime}from '../../utils/time'
+
 import './index.less'
 
 

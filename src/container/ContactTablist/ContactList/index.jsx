@@ -4,12 +4,14 @@ import { connect } from 'react-redux'
 import { Popover } from 'antd';
 import {saveCurrentContactuser,saveCurrentSender,saveRoomMemberlist} from '../../../redux/actions/commonInfo'
 
+import reverseByKey from '../../../utils/sort'
 import {chatHistorylist } from '../../../redux/actions/msgInfo'
 import Toast from '../../../components/Toast';
+
 import './index.less'
 
 class ContactList extends Component {
-    state = {isShow: true}
+    state = {isShow: true,list: this.props.list}
     getChatHistorys = (item) => {
         let parms = {
             pageIndex: 1,
@@ -83,14 +85,23 @@ class ContactList extends Component {
             }
         })
     }
+
+    // handleSettingTop = (item) => {
+    //     let {list} = this.state
+    //     let newList = list.filter(user => user.ConversationId !== item.ConversationId)
+    //     this.setState([item,...newList])
+    // }
     render() {
+        console.log('测试***********',this.state.list)
         let {list,currentContactuser,tab} = this.props
         let {isShow} = this.state
+        let sortList = reverseByKey(list,'LastChatTimestamp','isOnTop')
+        let sortRoomList = reverseByKey(list,'LastChatTimestamp')
         return (
             <ul className="contact-list">
                 {   
                     tab !== '2' ? 
-                    list.map(item => {
+                    sortList.map(item => {
                         return (
                             <Popover
                             title="请选择你要进行的操作"
@@ -103,7 +114,11 @@ class ContactList extends Component {
                                 <li 
                                     onContextMenu = {e => this.handleRightmenu(e,item)}
                                     onClick={(e) => this.handleCurUser(item,e)} 
-                                    className={["contact-item",item.ConversationId === currentContactuser.ConversationId  && item.WxId === currentContactuser.WxId ? 'active' : ''].join(' ')}
+                                    className={["contact-item",
+                                        item.ConversationId === currentContactuser.ConversationId  
+                                        && item.WxId === currentContactuser.WxId ? 'active' : 
+                                        item.isOnTop === 0 ? 'top-user' :
+                                        ''].join(' ')}
                                     >
                                     {
                                     item.Avatar ? <img src={item.Avatar} alt={item.UserName} /> : <img src='https://cdn.ourplay.net/xspace/headimage/1647242291211111.jpg' alt={item.NickName} />
@@ -119,7 +134,7 @@ class ContactList extends Component {
                             </Popover>
                         )
                     }) : 
-                    list.map(item => {
+                    sortRoomList.map(item => {
                         return (
                             <li 
                                 onContextMenu = {e => this.handleRightmenu(e,item)}
