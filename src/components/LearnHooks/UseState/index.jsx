@@ -35,7 +35,6 @@ export default function Learnhooks(props) {
   }
   return (
     <>
-      <h1>useState相关学习的操作</h1>
       <div>当前count的值为{count}</div>
       {/* <button onClick={() => setCount(count + 1)}>点我加一</button> */}
       <Button type='success' onClick={handleCount}>奇数加2，偶数加1</Button>
@@ -44,7 +43,6 @@ export default function Learnhooks(props) {
       <br />
       <div>当前用户的姓名:{info.name}----年龄: {info.age}----性别: {info.sex}</div>
       <Button onClick={handleClick} type='primary'>点我修改当前用户的年龄</Button>
-      <h2>--------------useContext相关的学习----------------</h2>
     </>
   )
 }
