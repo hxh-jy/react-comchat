@@ -13,7 +13,7 @@ class ComChat extends Component {
             saveUserinfo(userInfo.data)
         } else if (userInfo.code === 401) {
             console.log('token失效， 跳转到测试页面')
-            this.props.history.push('/test')
+            this.props.history.push('/reacthooks')
         }
     }
     render() {
