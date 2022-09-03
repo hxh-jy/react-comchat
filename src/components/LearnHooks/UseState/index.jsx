@@ -44,7 +44,7 @@ export default function Learnhooks(props) {
       <br />
       <div>当前用户的姓名:{info.name}----年龄: {info.age}----性别: {info.sex}</div>
       <Button onClick={handleClick} type='primary'>点我修改当前用户的年龄</Button>
-      <h2>--------------useEffect相关的学习----------------</h2>
+      <h2>--------------useContext相关的学习----------------</h2>
     </>
   )
 }

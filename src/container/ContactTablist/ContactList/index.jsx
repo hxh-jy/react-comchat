@@ -92,7 +92,6 @@ class ContactList extends Component {
     //     this.setState([item,...newList])
     // }
     render() {
-        console.log('测试***********',this.state.list)
         let {list,currentContactuser,tab} = this.props
         let {isShow} = this.state
         let sortList = reverseByKey(list,'LastChatTimestamp','isOnTop')
