@@ -36,5 +36,21 @@
 
 
 
+
++ useCallback Hook的使用
+  - 配合React.memo()使用
+    * React.memo()是一个高阶函数
+    * 如果有一个显示时间的组件,每一秒都会重新渲染一次，对于其Child子组件我们肯定不希望也跟着渲染，所以类式组件用到PureComponent(eg: class Time extends React.PureComponent);而函数式组件就可以在导出时用: React.memo('函数组件名')
+    * React.memo()可以满足创建纯函数而不是一个类的需求
+    * React.memo()可接受2个参数，第一个参数为纯函数的组件，第二个参数用于对比props控制是否刷新
+  - useCallback 用来返回一个函数
+    * 返回的函数a会根据b的变化而变化，如果b始终未发生变化，a也不会重新生成，避免函数在不必要的情况下更新。
+    * 记得子组件导出时使用memo包裹一下，其作用是对组件前后两次进行浅对比，阻止不必要的更新
+    * const a = useCallback(() => {
+        return function() {
+          console.log(b)
+        }
+      },[b])
+    * 作用：减少了组件间不必要的更新。
+
 + useReducer Hook的使用
-  - 

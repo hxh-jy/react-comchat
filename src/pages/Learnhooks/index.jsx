@@ -1,12 +1,15 @@
 import React from 'react'
-import LearnUseState from '../../components/LearnHooks/UseState'
-import LearnUseContext from '../../components/LearnHooks/UseContext'
-import LearnUseEffect from '../../components/LearnHooks/UseEffect'
+// import LearnUseState from '../../components/LearnHooks/UseState'
+// import LearnUseContext from '../../components/LearnHooks/UseContext'
+// import LearnUseEffect from '../../components/LearnHooks/UseEffect'
+// import LearnReacMemo from '../../components/LearnHooks/UseCallback/ReactMemo'
+
+import LearnUseCallbak  from '../../components/LearnHooks/UseCallback'
 
 export default function Learnhooks() {
   return (
     <>
-      <br />
+      {/* <br />
       <h1>———————————useState  hook的相关使用 ——————————</h1>
       <LearnUseState num={100}/>
       
@@ -16,7 +19,15 @@ export default function Learnhooks() {
 
       <br />
       <h1>———————————UseEffect  hook的使用——————————</h1>
-      <LearnUseEffect />
+      <LearnUseEffect /> */}
+
+      {/* <br />
+      <h1>———————————React.memo 高阶函数的使用——————————</h1>
+      <LearnReacMemo /> */}
+
+      <br />
+      <h1>———————————UseCallback  hook的使用——————————</h1>
+      <LearnUseCallbak />
     </>
   )
 }
