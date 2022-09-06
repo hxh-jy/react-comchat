@@ -4,7 +4,8 @@ import React from 'react'
 // import LearnUseEffect from '../../components/LearnHooks/UseEffect'
 // import LearnReacMemo from '../../components/LearnHooks/UseCallback/ReactMemo'
 
-import LearnUseCallbak  from '../../components/LearnHooks/UseCallback'
+// import LearnUseCallbak  from '../../components/LearnHooks/UseCallback'
+import LearnUseMemo  from '../../components/LearnHooks/UseMemo'
 
 export default function Learnhooks() {
   return (
@@ -25,9 +26,12 @@ export default function Learnhooks() {
       <h1>———————————React.memo 高阶函数的使用——————————</h1>
       <LearnReacMemo /> */}
 
-      <br />
+      {/* <br />
       <h1>———————————UseCallback  hook的使用——————————</h1>
-      <LearnUseCallbak />
+      <LearnUseCallbak /> */}
+      <br />
+      <h1>———————————UseMemo  hook的使用——————————</h1>
+      <LearnUseMemo />
     </>
   )
 }
