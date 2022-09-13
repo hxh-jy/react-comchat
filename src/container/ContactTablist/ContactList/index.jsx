@@ -136,7 +136,7 @@ class ContactList extends Component {
                                 onContextMenu = {e => this.handleRightmenu(e,item)}
                                 onClick={(e) => this.handleCurUser(item,e)} 
                                 className={["contact-item",item.ConversationId === currentContactuser.ConversationId  && item.WxId === currentContactuser.WxId ? 'active' : ''].join(' ')}
-                                key={item.ConversationId + Math.random()}
+                                key={item.ConversationId + item.WxId + item.chatId}
                                 >
                                 {
                                 item.Avatar ? <img src={item.Avatar} alt={item.UserName} /> : <img src='https://cdn.ourplay.net/xspace/headimage/1647242291211111.jpg' alt={item.NickName} />
