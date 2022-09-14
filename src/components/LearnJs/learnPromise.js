@@ -57,7 +57,7 @@ class Promise {
 
 let promise = new Promise((res,rej) => {
     setTimeout(() => {
-        res('成功')
+        res('成功测试冲突')
     },1000)
 }).then(res => {
     console.log(res)
