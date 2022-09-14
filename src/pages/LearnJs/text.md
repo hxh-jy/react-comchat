@@ -22,3 +22,13 @@
 
 + 如何实现一个简单的 Promise
     - Promise 对象用于表示一个异步操作的最终完成（或失败）及其结果值。
+    - 基本特征
+        * 三状态（pending、fulfilled、rejected）
+        * new promise时需要传入一个执行器，执行器接收两个参数（resolve、reject）
+        * 有一个value用于保存成功时的值
+        * 有一个reason保存失败状态的值
+        * 状态只能从pending到rejected，或者从pending到fulfilled，一旦确定不能改变
+        * 必须有一个then方法，接收两个参数，分别为成功时的回调onFulfilled和失败时的回调onRejected
+        * 如果调用 then 时，promise 已经成功，则执行onFulfilled，参数是promise的value；
+        * 如果调用 then 时，promise 已经失败，那么执行onRejected, 参数是promise的reason；
+        * 如果 then 中抛出了异常，那么就会把这个异常作为参数，传递给下一个 then 的失败的回调onRejected；
