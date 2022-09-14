@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 仅仅处理promise的同步情况
+        const PENDING = 'PENDING'
+        const FULFILLED = 'FULFILLED'
+        const REJECTED = 'REJECTED'
+
+        class Promise {
+            constructor(executor) {
+                this.status = PENDING
+                this.value = undefined
+                this.reason = undefined
+
+                let resolve = (value) => {
+                    if (this.status !== PENDING) return;
+                    this.status = FULFILLED
+                    this.value = value
+                }
+                let reject = reason => {
+                    if (this.status !== PENDING) return;
+                    this.status = REJECTED
+                    this.reason = reason
+                }
+
+                try {
+                    executor(resolve,reject)
+                } catch(err) {
+                    reject(err)
+                }
+            }
+
+            then(onFullfilled,onRejected) {
+                if (this.status === FULFILLED) {
+                    onFullfilled(this.value)
+                } 
+                if (this.status === REJECTED) {
+                    onRejected(this.reason)
+                }
+            }
+        }
+
+        // 测试一下
+        const promise = new Promise((resolve, reject) => {
+            resolve('成功');
+        }).then(
+            (data) => {
+            console.log('success', data)
+            },
+            (err) => {
+            console.log('faild', err)
+            }
+        )
+
+        console.log(promise)
+    </script>
+</body>
+</html>
