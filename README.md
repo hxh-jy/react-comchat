@@ -10,3 +10,7 @@
 
 # 用到的技术栈
 + redux + react-redux + react-router-dom + antd + axios
+
+
+# 欠缺的知识点
+ + 熟悉ajax + webpack技术 + 单点登录原理 + nginx配置 + babel + node.js + http + es6
