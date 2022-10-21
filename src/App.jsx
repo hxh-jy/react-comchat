@@ -8,6 +8,7 @@ let LearnJs = lazy(() => import('./pages/LearnJs'))
 let learnEcharts = lazy(() => import('./pages/LearnEcharts'))
 
 let LearnAjax = lazy(() => import('./pages/LearnAjax'))
+let Linaria = lazy(() => import('./pages/Linaria'))
 export default class App extends Component {
   render() {
     return (
@@ -18,6 +19,7 @@ export default class App extends Component {
           <NavLink className="route-item" to='learnJs'>js复习</NavLink>
           <NavLink className="route-item" to='learnEcharts'>echarts的学习</NavLink>
           <NavLink className="route-item" to='learnAjax'>ajax的学习</NavLink>
+          <NavLink className="route-item" to='linaria'>Linaria的学习</NavLink>
         </div>
         <div className="router-container">
           <Suspense fallback="加载中">
@@ -27,6 +29,7 @@ export default class App extends Component {
               <Route path="/learnJs" component={LearnJs}></Route>
               <Route path="/learnEcharts" component={learnEcharts}></Route>
               <Route path="/learnAjax" component={LearnAjax}></Route>
+              <Route path="/linaria" component={Linaria}></Route>
               <Redirect to='/reacthooks'/>
             </Switch>
           </Suspense>
