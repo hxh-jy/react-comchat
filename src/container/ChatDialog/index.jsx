@@ -5,7 +5,8 @@ import { connect } from 'react-redux'
 import Emoji from '../../components/Emoji'
 import  {qq_faceMap} from '../../assets/js/qq_face'
 import {parseTime}from '../../utils/time'
-import SideBar from '../SideBar'
+// import SideBar from '../SideBar'
+
 
 import './index.less'
 
@@ -361,9 +362,9 @@ class ChatDialog extends Component {
                             <div className="inputDesc"> Enter发送; Ctrl+Enter换行 </div>
                         </div>
                     </div>
-                    <div className='side_bar'>
+                    {/* <div className='side_bar'>
                         <SideBar />
-                    </div>
+                    </div> */}
                 </div>
             </div>
         )

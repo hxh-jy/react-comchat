@@ -31,6 +31,9 @@ let BgcStyle = styled.ul`
             font-size: ${props => props.size}px;
             color: #fff;
         }
+        .bd {
+            ${bd}
+        }
     }
 `
 
@@ -56,7 +59,7 @@ export default function Linaria() {
                         return (
                             <li key={item.id}>
                                 <div className='text'>{item.intro}</div>
-                                <div className={bd}></div>
+                                <div className='bd'></div>
                             </li>
                         )
                     })
