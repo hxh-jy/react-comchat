@@ -1,5 +1,11 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled,{css} from 'styled-components'
+let bd = css `
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.3);
+`
 let BgcStyle = styled.ul`
     display: flex;
     li {
@@ -24,12 +30,6 @@ let BgcStyle = styled.ul`
             z-index: 99;
             font-size: ${props => props.size}px;
             color: #fff;
-        }
-        .bd {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.3);
         }
     }
 `
@@ -56,7 +56,7 @@ export default function Linaria() {
                         return (
                             <li key={item.id}>
                                 <div className='text'>{item.intro}</div>
-                                <div className='bd'></div>
+                                <div className={bd}></div>
                             </li>
                         )
                     })

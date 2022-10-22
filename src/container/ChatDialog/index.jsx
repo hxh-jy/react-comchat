@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import Emoji from '../../components/Emoji'
 import  {qq_faceMap} from '../../assets/js/qq_face'
 import {parseTime}from '../../utils/time'
+import SideBar from '../SideBar'
 
 import './index.less'
 
@@ -248,114 +249,121 @@ class ChatDialog extends Component {
         return (
             <div className="chat-container">
                 <div className="chat-header">聊天框头部</div>
-                {/* 消息展示框 */}
-                <ul ref={node => this.chatDialog = node} className="chat-body">
-                    <li className="moreChatHistory">
-                    {
-                        historyList.length === 100 ?
-                        <span onClick={this.moreHistory}>点击加载更多</span> : 
-                        <span>暂无更多聊天记录</span>
-                    }
-                    </li>
-                    {   
-                        historyList.map((item,index) => {
-                            return (
-                                <li 
-                                className={[currentContactuser.WxId === item.WxId ? 'sender-user' : 'receive-user']} 
-                                key={item.WxId + Math.random()}>
-                                    {   currentContactuser.WxId !== item.WxId ?
-                                        <img className="msg-icon" src={this.getUserAvatar(item)} alt="" /> : ''
-                                    }
-                                    <div className="msg-info">
-                                        <div className="msg-user">
-                                            <span className="user-name">{item.name} </span>
-                                            <span className="send-time"> {parseTime(item.sendTime)}</span>
-                                        </div>
-                                        {   item.type === 11041 ?
-                                            <span className="msg" dangerouslySetInnerHTML={{ __html: this.formatMsg(item.content,index) }}></span> : 
-                                            // <span className="msg">{this.formatMsg(item.content,index)}</span> : 
-                                            item.type === 11042 || item.type === 11048 ? 
-                                            <img className="chat-img" src={item.content} alt="" /> : 
-                                            item.type === 11043 || item.type === 11044 ? 
-                                            <video className="chat-video" 
-                                                    controls 
-                                                    muted  
-                                                    preload="true"
-                                                    src={item.content}></video> : 
-                                            item.type === 11045 || item.type === 11031 ? 
-                                                // 下载文件 
-                                            <span className="msg">文件：{this.fileName(item.content)}</span> : 
-                                            item.type === 11066  ?      
-                                            <span className="msg">{item.content+'【小程序】'}</span> : 
-                                            // 11047图文链接 超链接
-                                            item.type === 11047  ?      
-                                            <span className="imgtext-link">
-                                                <a className="link-url" href={item.url}>
-                                                    <span className="link-title">{item.title}</span>
-                                                    <span className="link-body">
-                                                        <span className="link-desc">{item.desc}</span>
-                                                        <span className="link-img">
-                                                            <img src={item.image_url} alt="" />
-                                                        </span>
-                                                    </span>
-                                                </a>
-                                            </span> : ''
-                                        }
-                                    </div>
-                                    {   currentContactuser.WxId === item.WxId ?
-                                        <img className="msg-icon" src={currentSender.Avatar} alt="" /> : ''
-                                    }
-                                </li>
-                            )
-                        })
-                    }
-                </ul>
-                
-                {/* 发送消息框 */}
-                <div className="chat-send">
-                    {/* 发送表情包、视频、图片、文件 */}
-                    <ul className="send-other">
-                        <li className="send-emoji">
-                            <Popover 
-                            visible={emojiVisible}
-                            content={<Emoji getEmoji={this.getEmoji}/>} 
-                            title="发送表情包" 
-                            trigger="click">
-                                <img 
-                                onClick={this.transferEmojiShow}
-                                src={require('../../assets/img/tochat/emoji.png')}  
-                                alt="发送表情包" />
-                            </Popover>
-                        </li>
-                        {/* customRequest  自定义上传文件 */}
-                        <li className="send-img">
-                            <Upload
-                            action=""
-                            showUploadList={false} 
-                            customRequest={file => this.uploadImage(file)}
-                            >
-                                <img src={require("../../assets/img/tochat/picture.png" )} alt="上传图片" />
-                            </Upload>
-                        </li>
+                <div className='chat-body'>
+                    <div className='msg_display'>
+                        {/* 消息展示框 */}
+                        <ul ref={node => this.chatDialog = node} className="chat-msg">
+                            <li className="moreChatHistory">
+                            {
+                                historyList.length === 100 ?
+                                <span onClick={this.moreHistory}>点击加载更多</span> : 
+                                <span>暂无更多聊天记录</span>
+                            }
+                            </li>
+                            {   
+                                historyList.map((item,index) => {
+                                    return (
+                                        <li 
+                                        className={[currentContactuser.WxId === item.WxId ? 'sender-user' : 'receive-user']} 
+                                        key={item.WxId + Math.random()}>
+                                            {   currentContactuser.WxId !== item.WxId ?
+                                                <img className="msg-icon" src={this.getUserAvatar(item)} alt="" /> : ''
+                                            }
+                                            <div className="msg-info">
+                                                <div className="msg-user">
+                                                    <span className="user-name">{item.name} </span>
+                                                    <span className="send-time"> {parseTime(item.sendTime)}</span>
+                                                </div>
+                                                {   item.type === 11041 ?
+                                                    <span className="msg" dangerouslySetInnerHTML={{ __html: this.formatMsg(item.content,index) }}></span> : 
+                                                    // <span className="msg">{this.formatMsg(item.content,index)}</span> : 
+                                                    item.type === 11042 || item.type === 11048 ? 
+                                                    <img className="chat-img" src={item.content} alt="" /> : 
+                                                    item.type === 11043 || item.type === 11044 ? 
+                                                    <video className="chat-video" 
+                                                            controls 
+                                                            muted  
+                                                            preload="true"
+                                                            src={item.content}></video> : 
+                                                    item.type === 11045 || item.type === 11031 ? 
+                                                        // 下载文件 
+                                                    <span className="msg">文件：{this.fileName(item.content)}</span> : 
+                                                    item.type === 11066  ?      
+                                                    <span className="msg">{item.content+'【小程序】'}</span> : 
+                                                    // 11047图文链接 超链接
+                                                    item.type === 11047  ?      
+                                                    <span className="imgtext-link">
+                                                        <a className="link-url" href={item.url}>
+                                                            <span className="link-title">{item.title}</span>
+                                                            <span className="link-body">
+                                                                <span className="link-desc">{item.desc}</span>
+                                                                <span className="link-img">
+                                                                    <img src={item.image_url} alt="" />
+                                                                </span>
+                                                            </span>
+                                                        </a>
+                                                    </span> : ''
+                                                }
+                                            </div>
+                                            {   currentContactuser.WxId === item.WxId ?
+                                                <img className="msg-icon" src={currentSender.Avatar} alt="" /> : ''
+                                            }
+                                        </li>
+                                    )
+                                })
+                            }
+                        </ul>
                         
-                        <li className="send-file">
-                            <Upload
-                            action=""
-                            showUploadList={false} 
-                            customRequest={file => this.uploadFile(file)}
-                            >
-                                <img src={require("../../assets/img/tochat/file.png" )} alt="发送文件" />
-                            </Upload>
-                        </li>
-                    </ul>
-                    {/* 发送普通文本 */}
-                    <TextArea 
-                    value={inputContent} 
-                    rows={7} 
-                    onPressEnter={this.onPressEnter}
-                    onInput={this.onChange}
-                    />
-                    <div className="inputDesc"> Enter发送; Ctrl+Enter换行 </div>
+                        {/* 发送消息框 */}
+                        <div className="chat-send">
+                            {/* 发送表情包、视频、图片、文件 */}
+                            <ul className="send-other">
+                                <li className="send-emoji">
+                                    <Popover 
+                                    visible={emojiVisible}
+                                    content={<Emoji getEmoji={this.getEmoji}/>} 
+                                    title="发送表情包" 
+                                    trigger="click">
+                                        <img 
+                                        onClick={this.transferEmojiShow}
+                                        src={require('../../assets/img/tochat/emoji.png')}  
+                                        alt="发送表情包" />
+                                    </Popover>
+                                </li>
+                                {/* customRequest  自定义上传文件 */}
+                                <li className="send-img">
+                                    <Upload
+                                    action=""
+                                    showUploadList={false} 
+                                    customRequest={file => this.uploadImage(file)}
+                                    >
+                                        <img src={require("../../assets/img/tochat/picture.png" )} alt="上传图片" />
+                                    </Upload>
+                                </li>
+                                
+                                <li className="send-file">
+                                    <Upload
+                                    action=""
+                                    showUploadList={false} 
+                                    customRequest={file => this.uploadFile(file)}
+                                    >
+                                        <img src={require("../../assets/img/tochat/file.png" )} alt="发送文件" />
+                                    </Upload>
+                                </li>
+                            </ul>
+                            {/* 发送普通文本 */}
+                            <TextArea 
+                            value={inputContent} 
+                            rows={7} 
+                            onPressEnter={this.onPressEnter}
+                            onInput={this.onChange}
+                            />
+                            <div className="inputDesc"> Enter发送; Ctrl+Enter换行 </div>
+                        </div>
+                    </div>
+                    <div className='side_bar'>
+                        <SideBar />
+                    </div>
                 </div>
             </div>
         )

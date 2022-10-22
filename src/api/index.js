@@ -126,5 +126,11 @@ api.getCancelContactTopRequest = function(data) {
         data: JSON.stringify(data)
     })
 }
-
+api.getContactRelation = function(data) {
+    return request({
+        url: '/Contact/GetContactRelation',
+        method: 'post',
+        data: JSON.stringify(data)
+    })
+}
 export default api

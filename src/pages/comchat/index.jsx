@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 import ChatDialog from '../../container/ChatDialog'
 import ContactTabList from '../../container/ContactTablist'
 import WxuserList from '../../container/WxuserList'
+
 import {saveUserinfo} from '../../redux/actions/commonInfo'
 import './index.less'
 class ComChat extends Component {
